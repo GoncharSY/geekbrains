@@ -1,0 +1,35 @@
+[{
+    "Model":   "Lada Priora",
+    "Type":    "Седан",
+    "Release": "2019-08-19T12:00:00Z",
+    "Engine":  {
+        "Capacity": 98,
+        "IsRunning": true
+    },
+    "Trunk": {
+        "Volume": 360,
+        "Filled": 78
+    },
+    "Windows": [
+        {"IsOpen": true},
+        {"IsOpen": true},
+        {"IsOpen": false},
+        {"IsOpen": false}
+    ]
+},{
+    "Model":   "Газель",
+    "Type":    "Грузовик",
+    "Release": "2018-05-19T10:00:00Z",
+    "Engine":  {
+        "Capacity": 106.8,
+        "IsRunning": false
+    },
+    "Trunk": {
+        "Volume": 3600,
+        "Filled": 34
+    },
+    "Windows": [
+        {"IsOpen": true},
+        {"IsOpen": false}
+    ]
+}]
