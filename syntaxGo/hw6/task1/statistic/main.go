@@ -10,3 +10,12 @@ func Average(xs []float64) float64 {
 
 	return total / float64(len(xs))
 }
+
+// Sum - вернет сумму чисел в переданном наборе.
+func Sum(itm []float64) (sum float64) {
+	for i := range itm {
+		sum += itm[i]
+	}
+
+	return
+}
