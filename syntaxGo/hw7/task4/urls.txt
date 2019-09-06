@@ -1,0 +1,9 @@
+https://yandex.ru
+https://www.google.com
+https://www.yahoo.com
+https://www.rambler.ru
+
+# Пустая строка завершает список
+# Адреса ниже не будут использоваться
+
+https://golang.org
