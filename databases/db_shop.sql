@@ -25,15 +25,15 @@ USE `gsy_shop`;
 
 
 /* ============================================================================================= */
-/* СОЗДАНИЕ ТАБЛИЦ ============================================================================= */
+/* СОЗДАНИЕ И ЗАПОЛНЕНИЕ ТАБЛИЦ ================================================================ */
 /* ============================================================================================= */
 
 DROP TABLE IF EXISTS `catalogs`;
 CREATE TABLE `catalogs` (
-    `id`      SERIAL,
+    `id`      SERIAL,                               -- bigint(20) unsigned NOT NULL AUTO_INCREMENT
     `name`    VARCHAR(255) DEFAULT 'NO NAME' COMMENT 'Наименование раздела',
-    PRIMARY KEY (`id`),
-    UNIQUE `unique_name` (`name` (10)) -- Индексируем первые 10 символов 
+    PRIMARY KEY (`id`),                             -- Первичный ключ
+    UNIQUE `unique_name` (`name` (10))              -- Индексируем первые 10 символов 
 ) COMMENT = 'Разделы интернет-магазина';
 
 INSERT IGNORE INTO `catalogs` (`id`, `name`) VALUES 
@@ -152,7 +152,7 @@ CREATE TABLE `orders_products` (
     `created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at`  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
-    UNIQUE KEY index_of_order_product (`order_id`, `product_id`)
+    UNIQUE KEY index_of_order_product (`order_id`, `product_id`) -- Индексируем по двум полям
 ) COMMENT = 'Товары в заказах';
 
 INSERT INTO `orders_products` (
