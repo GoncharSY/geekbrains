@@ -1,0 +1,41 @@
+// Самый первый запрос:
+SELECT 'Hello World!'
+
+
+
+// Запуск команды из файла:
+SOURCE /my/file/path
+
+// Создание резервной копии:
+mysqldump my_database_name > my_backup_file.sql
+
+// Восстановление резервной копии базы:
+mysql my_database_name < my_backup_file.sql
+
+// Очистка экрана (\c или clear не работают):
+Ctrl + L
+
+
+
+// Создать базу данных:
+CREATE DATABASE IF NOT EXISTS my_database_name;
+
+// Показать список существующих баз данных:
+SHOW DATABASES;
+
+// Удалить сущестующую базу данных:
+DROP DATABASE IF NOT EXISTS my_database_name;
+
+// Выбрать базу данных по умолчанию:
+USE my_database_name;
+// ...или
+mysql my_database_name
+
+// Создать новую таблицу:
+CREATE TABLE IF NOT EXISTS my_table_name (param1 TYPE, param2 TYPE);
+
+// Удалить таблицу
+DROP TABLE my_table_name;
+
+// Показать описание таблицы (не для каждого клиента):
+DESCRIBE my_table_name;
