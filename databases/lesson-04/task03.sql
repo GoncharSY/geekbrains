@@ -1,0 +1,12 @@
+SELECT ROUND(EXP(SUM(log(val)))) AS product 
+FROM (
+	SELECT 1 AS val
+	UNION ALL
+    SELECT 2
+    UNION ALL 
+    SELECT 3
+    UNION ALL 
+    SELECT 4
+    UNION ALL 
+    SELECT 5
+) AS vls;
