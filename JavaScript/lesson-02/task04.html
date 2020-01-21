@@ -1,0 +1,58 @@
+<!--
+  Реализовать основные 4 арифметические операции (+, -, /, *) в виде функций с 
+  двумя параметрами. Обязательно использовать оператор return.
+-->
+
+<meta charset="utf-8"/>
+<script>
+  "use strict";
+
+  let a = 7;
+  let b = 3;
+
+  console.log("ADD: " + add(a, b));
+  console.log("SUB: " + subtract(a, b));
+  console.log("MUL: " + multiply(a, b));
+  console.log("DIV: " + divide(a, b));
+
+  /**
+   * Сложить два числа.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+   function add(a, b) {
+    return a + b;
+  }
+
+  /**
+   * Вычесть из числа A число B.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+  function subtract(a, b) {
+    return a - b;
+  }
+
+  /**
+   * Перемножить два числа.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+  function multiply(a, b) {
+    return a * b;
+  }
+
+  /**
+   * Разделить число A на число B.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+  function divide(a, b) {
+    return a / b;
+  }
+
+</script>

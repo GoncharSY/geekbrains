@@ -1,0 +1,83 @@
+<!--
+  Реализовать функцию с тремя параметрами: function mathOperation(arg1, arg2, operation),
+  где arg1, arg2 – значения аргументов, operation – строка с названием операции. 
+  В зависимости переданного значения операции (использовать switch) выполнить 
+  одну из арифметических операций (использовать функции из задания 4) и вернуть 
+  полученное значение.
+-->
+
+<meta charset="utf-8"/>
+<script>
+  "use strict";
+
+  let a = 7;
+  let b = 3;
+
+  console.log("ADD: " + mathOperation(a, b, "add"));
+  console.log("SUB: " + mathOperation(a, b, "sub"));
+  console.log("MUL: " + mathOperation(a, b, "mul"));
+  console.log("DIV: " + mathOperation(a, b, "div"));
+  console.log("ERR: " + mathOperation(a, b, "err"));
+
+  /**
+   * Выполнить арифметическую операцию для двух чисел.
+   * @param {Number} arg1
+   * @param {Number} arg2
+   * @param {String} operation - add, sub, mul или div.
+   * @return {Number}
+   */
+  function mathOperation(arg1, arg2, operation) {
+    switch (operation.toLowerCase()) {
+      case "add":
+        return add(arg1, arg2);
+      case "sub":
+        return subtract(arg1, arg2);
+      case "mul":
+        return multiply(arg1, arg2);
+      case "div":
+        return divide(arg1, arg2);
+      default:
+        return NaN;
+    }
+  }
+
+  /**
+   * Сложить два числа.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+   function add(a, b) {
+    return a + b;
+  }
+
+  /**
+   * Вычесть из числа A число B.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+  function subtract(a, b) {
+    return a - b;
+  }
+
+  /**
+   * Перемножить два числа.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+  function multiply(a, b) {
+    return a * b;
+  }
+
+  /**
+   * Разделить число A на число B.
+   * @param {Number} a
+   * @param {Number} b
+   * @return {Number}
+   */
+  function divide(a, b) {
+    return a / b;
+  }
+</script>
