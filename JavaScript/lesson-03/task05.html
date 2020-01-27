@@ -1,0 +1,60 @@
+<!--
+  Дан массив (создать такой же, с такими же значениями):
+  
+  const arr = [
+    [2, 4, 6],
+    [1, 5, 10],
+    [7, 4, 1],
+  ];
+
+  Задания:
+    1 Найти массив, у которого сумма всех чисел максимальна, вывести в console.log
+      индекс этого массива.
+    2 Получить и вывести в console.log минимальное значение найденное в массиве,
+      который мы получили в первом пункте.
+-->
+
+<meta charset="utf-8"/>
+<script>
+  "use strict";
+
+  const arr = [
+    [2, 4, 6],
+    [1, 5, 10],
+    [7, 4, 1],
+  ];
+
+  let idxArr = null; 
+  let maxSum = null; 
+  let minVal = null;
+
+
+  // 1. Найдем массив с максимальной суммой.
+  for (let idx in arr) {
+    let sum = 0;
+
+    for (let val of arr[idx]) {
+      sum += val;
+    }
+
+    if (maxSum === null || maxSum < sum) {
+      idxArr = idx;
+      maxSum = sum;
+    }
+  }
+
+
+  // 2. Найдем минимальный элемент.
+  for (let val of arr[idxArr]) {
+    if (minVal === null || minVal > val) {
+      minVal = val;
+    }
+  }
+
+
+  // Отобразим результат.
+  // console.log(idxArr);
+  // console.log(minVal);
+  console.log(`Индекс массива: ${idxArr} \nСумма элементов: ${maxSum} \nМин.значение: ${minVal}`);
+
+</script>
