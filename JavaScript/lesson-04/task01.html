@@ -24,6 +24,46 @@
 <script>
   "use strict";
 
-  
+
+  // Протестируем некорретный ввод.
+  console.log(getObject("Не число")); // Вообще не число.
+  console.log(getObject(123.123));    // Не целое число.
+  console.log(getObject(-1));         // Число вне диапазона (мин.).
+  console.log(getObject(1000));       // Число вне диапазона (макс.).
+
+  // Протестируем нормальные ситуации.
+  console.log(getObject(0));
+  console.log(getObject(1));
+  console.log(getObject(10));
+  console.log(getObject(12));
+  console.log(getObject(100));
+  console.log(getObject(120));
+  console.log(getObject(123));
+
+
+  /**
+   * Получить объект.
+   * @param {int} n число для преобразования в объект
+   * @return {object}
+   */
+  function getObject(n) {
+    const obj = {};
+
+    if (Number.isNaN(+n) || n < 0 || n > 999 || n > Math.floor(n)) {
+      console.log("Некорректный параметр: необходимо целое число в диапазоне [0, 999]");
+      return obj;
+    }
+
+    obj.firstDigit = n % 10;
+    n = Math.floor(n / 10);
+
+    obj.secondDigit = n % 10;
+    n = Math.floor(n / 10);
+
+    obj.thirdDigit = n;
+
+    return obj;
+  }
+
 
 </script>
