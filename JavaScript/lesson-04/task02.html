@@ -10,6 +10,191 @@
 <script>
   "use strict";
 
+    /**
+     * Объект с настройками игры.
+     * @property {int} rowsCount Количество строк в карте.
+     * @property {int} colsCount Количество колонок в карте.
+     * @property {int} startPositionX Начальная позиция игрока по X координате.
+     * @property {int} startPositionY Начальная позиция игрока по Y координате.
+     */
+    const settings = {
+      rowsCount: 10,
+      colsCount: 10,
+      startPositionX: 0,
+      startPositionY: 0,
+    };
+
+
+
+    /**
+     * Объект игрока, здесь будут все методы и свойства связанные с ним.
+     * @property {int} x Позиция по X-координате.
+     * @property {int} y Позиция по Y-координате.
+     */
+    const player = {
+      x: null,
+      y: null,
+
+
+      /**
+       * Инициализация игрока и его метоположения.
+       * @param {int} startX
+       * @param {int} startY
+       */
+      init(startX, startY) {
+        this.x = startX;
+        this.y = startY;
+      },
+
+
+      /**
+       * Двигает игрока по переданному направлению.
+       * @param {int} direction Направление, в котором будет движение.
+       */
+      move(direction) {
+        switch (direction) {
+          case 1:
+            this.y++;
+            this.x--;
+            break;
+          case 2:
+            this.y++;
+            break;
+          case 3:
+            this.y++;
+            this.x++;
+            break;
+          case 4:
+            this.x--;
+            break;
+          case 6:
+            this.x++;
+            break;
+          case 7:
+            this.y--;
+            this.x--;
+            break;
+          case 8:
+            this.y--;
+            break;
+          case 9:
+            this.y--;
+            this.x++;
+            break;
+        }
+      },
+    };
+
+
+
+
+    /**
+     * Объект игры, здесь будут все методы и свойства связанные с самой игрой в общем.
+     * @property {settings} settings Настройки игры.
+     * @property {player} player Игрок, участвующий в игре.
+     */
+    const game = {
+      settings,
+      player,
+
+
+      /**
+       * Запускает игру.
+       */
+      run() {
+        this.player.init(this.settings.startPositionX, this.settings.startPositionY);
+        
+        while (true) {
+          this.render();
+
+          const direction = this.getDirection();
+
+          if (direction === -1) {
+            alert('До свидания.');
+            return;
+          }
+
+          this.player.move(direction);
+          this.stopByBorder();
+        }
+      },
+
+
+      /**
+       * Отображает игру в консоли.
+       */
+      render() {
+        let map = "";
+
+        for (let row = 0; row < this.settings.rowsCount; row++) {
+          for (let col = 0; col < this.settings.colsCount; col++) {
+            if (this.player.y === row && this.player.x === col) {
+              map += 'o ';
+            } else {
+              map += 'x ';
+            }
+          }
+          map += '\n';
+        }
+
+        console.clear();
+        console.log(map);
+      },
+
+
+      /**
+       * Получает и отдает направление от пользователя.
+       * @returns {int} Возвращаем направление, введенное пользователем.
+       */
+      getDirection() {
+        const availableDirections = [-1, 1, 2, 3, 4, 6, 7, 8, 9];
+
+        while (true) {
+          const direction = parseInt(prompt('Введите число, куда вы хотите переместиться, -1 для выхода.'));
+
+          if (!availableDirections.includes(direction)) {
+            alert(`Для перемещения необходимо ввести одно из чисел: ${availableDirections.join(', ')}.`);
+            continue;
+          }
+
+          return direction;
+        }
+      },
+
+
+       /**
+       * Возвращает игрока на игровое поле.
+       * Не позволяет игроку пересекать границы игровой области.
+       */
+      stopByBorder() {
+        const plr = this.player;
+        const minX = 0;
+        const minY = 0;
+        const maxX = this.settings.colsCount - 1;
+        const maxY = this.settings.rowsCount - 1;
+
+        if (plr.x < minX) {
+          plr.x = minX;
+        }
+
+        if (plr.y < minY) {
+          plr.y = minY;
+        }
+
+        if (plr.x > maxX) {
+          plr.x = maxX;
+        }
+
+        if (plr.y > maxY) {
+          plr.y = maxY;
+        }
+      }
+    };
+
+
+
+    // Запускаем игру.
+    game.run();
   
 
 </script>
