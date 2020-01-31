@@ -20,6 +20,157 @@
 <script>
   "use strict";
 
-  
+  const settings = {
+    stepCount: 5
+  };
+
+
+
+
+  const game = {
+    settings,
+    step: 0,
+    score: 0,
+    questions: null,
+
+
+    /**
+     * Приветствовать игрока.
+     */
+    greet() {
+      if (!confirm("Добро пожаловать! Желаете сыграть в игру?")) {
+        return false;
+      } else {
+        return confirm(
+          "Правила просты:\n" + 
+          "   1. Я задаю вопрос;\n" + 
+          "   2. Вы угадываете;\n" +
+          "   3. Вариант указываете в поле для ответа.\n\n" + 
+          "Итак, начнем?"
+        );
+      }
+    },
+
+
+    /**
+     * Запустить игру.
+     */
+    run() {
+      if (!this.greet()) {
+        return;
+      }
+
+      this.init();
+      
+      for (this.step in this.questions) {
+        let qst = this.questions[this.step];
+        let ans = "";
+
+        // Получим ответ на вопрос.
+        do {
+          ans = this.askQuestion(qst).toLowerCase();
+          if (!ans && this.exit()) {
+            return;
+          }
+        } while (!qst.options.hasOwnProperty(ans));
+
+        // Проверим ответ.
+        if (ans === qst.answer) {
+          this.score++;
+        }
+      }
+
+      this.exit();
+    },
+
+
+    /**
+     * Задать вопрос, получить вариант ответа.
+     * @param {object} q вопрос
+     * @return {string}
+     */
+    askQuestion(q) {
+      let txt = `Вопрос №${+this.step + 1}: ${q.question}\n`;
+
+      for (let key in q.options) {
+        txt += `\n  ${key}: ${q.options[key]}`;
+      }
+
+      return prompt(txt) || "";
+    },
+
+
+    /**
+     * Инициализировать игру.
+     */
+    init() {
+      this.step = 0;
+      this.score = 0;
+      this.questions = questions;
+    },
+
+
+    /**
+     * Завершить игру.
+     */
+    exit() {
+      console.log("Завершаю игру.");
+      return true;
+    },
+  };
+
+
+
+
+  const questions = [{
+    question: "Сколько букв в слове \"вечер\"?",
+    answer: "b",
+    options: {
+      a: "Пять",
+      b: "Шесть",
+      c: "Семь",
+      d: "Восемь",
+    },
+  },{
+    question: "12 + 11 = ?",
+    answer: "d",
+    options: {
+      a: "22",
+      b: "33",
+      c: "32",
+      d: "23",
+    },
+  },{
+    question: "Сколько букв в слове \"день\"?",
+    answer: "с",
+    options: {
+      a: "3",
+      b: "5",
+      c: "4",
+      d: "6",
+    },
+  },{
+    question: "Сколько букв в слове \"утро\"?",
+    answer: "с",
+    options: {
+      a: "3",
+      b: "5",
+      c: "4",
+      d: "6",
+    },
+  },{
+    question: "Сколько букв в слове \"ночь\"?",
+    answer: "с",
+    options: {
+      a: "3",
+      b: "5",
+      c: "4",
+      d: "6",
+    },
+  }];
+
+
+
+  game.run();
 
 </script>
