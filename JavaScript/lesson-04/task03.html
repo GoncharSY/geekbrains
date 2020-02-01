@@ -1,0 +1,183 @@
+<!--
+  3**. На базе игры (приняв за пример), созданной на уроке, реализовать игру «Кто хочет стать
+  миллионером?».
+  
+  Т.е. у вас должен быть главный объект содержащий всю логику игры, который будет иметь
+  методы, например метод run, возможно метод init и т.д.
+  
+  В игре должны быть заранее подготовлены список вопросов и ответов (как минимум 5 вопросов).
+  Игра должна приветствовать пользователя, после чего задавать вопросы пользователю и
+  предлагать варианты ответов в виде теста, например:
+  
+  Сколько букв в слове "привет":
+    a. Пять.
+    b. Шесть.
+    c. Семь.
+    d. Куда я попал?
+-->
+
+<meta charset="utf-8"/>
+<script>
+  "use strict";
+
+  const settings = {
+    stepCount: 5
+  };
+
+
+
+
+  const game = {
+    settings,
+    step: 0,
+    score: 0,
+    questions: null,
+
+
+    /**
+     * Приветствовать игрока.
+     */
+    greet() {
+      if (!confirm("Добро пожаловать! Желаете сыграть в игру?")) {
+        return false;
+      } else {
+        return confirm(
+          "Правила просты:\n" + 
+          "   1. Я задаю вопрос;\n" + 
+          "   2. Вы угадываете;\n" +
+          "   3. Вариант указываете в поле для ответа.\n" + 
+          "   4. Если решите прекратить игру, оставьте поле для ответа пустым.\n" + 
+          "\nИтак, начнем?"
+        );
+      }
+    },
+
+
+    /**
+     * Запустить игру.
+     */
+    run() {
+      if (!this.greet()) {
+        return;
+      }
+
+      this.init();
+      
+      for (this.step in this.questions) {
+        let qst = this.questions[this.step];
+        let ans = "";
+
+        // Получим ответ на вопрос.
+        do {
+          ans = this.askQuestion(qst).toLowerCase();
+          if (!ans && this.exit()) {
+            return;
+          }
+        } while (!qst.options.hasOwnProperty(ans));
+
+        // Проверим ответ.
+        if (ans === qst.answer) {
+          console.log("Правильно.");
+          this.score++;
+        } else {
+          console.log("Неправильно.");
+        }
+      }
+
+      this.exit();
+    },
+
+
+    /**
+     * Задать вопрос, получить вариант ответа.
+     * @param {object} q вопрос
+     * @return {string}
+     */
+    askQuestion(q) {
+      let txt = `Вопрос №${+this.step + 1}:\n${q.question}\n`;
+
+      for (let key in q.options) {
+        txt += `\n  ${key}: ${q.options[key]}`;
+      }
+
+      return prompt(txt) || "";
+    },
+
+
+    /**
+     * Инициализировать игру.
+     */
+    init() {
+      this.step = 0;
+      this.score = 0;
+      this.questions = questions;
+    },
+
+
+    /**
+     * Завершить игру.
+     */
+    exit() {
+      let txt = `Вы ответили на ${+this.step+1} из ${this.settings.stepCount} вопросов.`
+
+      txt += `\nИз них правильных ответов: ${this.score}`;
+      alert(txt);
+      return true;
+    },
+  };
+
+
+
+
+  const questions = [{
+    question: "Из скольких месяцев состоит год?",
+    answer: "c",
+    options: {
+      a: "Из 10 месяцев",
+      b: "Из 11 месяцев",
+      c: "Из 12 месяцев",
+      d: "Из 13 месяцев",
+    },
+  },{
+    question: "12 + 11 = ?",
+    answer: "d",
+    options: {
+      a: "22",
+      b: "33",
+      c: "32",
+      d: "23",
+    },
+  },{
+    question: "Какой месяц начинает зиму?",
+    answer: "b",
+    options: {
+      a: "Февраль",
+      b: "Декабрь",
+      c: "Январь",
+      d: "Ноябрь",
+    },
+  },{
+    question: "Какая птица не имеет своего гнезда?",
+    answer: "c",
+    options: {
+      a: "Сорока",
+      b: "Голубь",
+      c: "Кукушка",
+      d: "Ворона",
+    },
+  },{
+    question: "За какой нотой следует нота «Ля»?",
+    answer: "a",
+    options: {
+      a: "Соль",
+      b: "До",
+      c: "Си",
+      d: "Ре",
+    },
+  }];
+
+
+
+  game.run();
+
+</script>
