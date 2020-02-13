@@ -22,8 +22,17 @@
       }
     </style>
     <script src="task01.js"></script>
+    <script src="task02.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const board = createChessBoard();
+
+        setInitialPositions(board);
+        document.body.append(board);
+      });
+    </script>
   </head>
   <body>
-    <!-- <table id="chessBoard"></table> -->
+    <!-- Здесь появится шахматная доска -->
   </body>
 </html>

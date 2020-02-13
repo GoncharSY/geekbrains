@@ -11,10 +11,6 @@
 
 "use strict";
 
-window.addEventListener("load", () => {
-  document.body.append(createChessBoard());
-});
-
 
 
 /**
@@ -78,6 +74,8 @@ function createSquare(x, y) {
   square.style.fontWeight = "bold";
 
   square.innerHTML = getSquareText(x, y);
+  square.dataset.position = `x${x}_y${y}`;
+  square.classList.add("square");
 
   return square;
 }
@@ -133,9 +131,9 @@ function getSquareColor(x, y) {
 
   // Нечетные игровые линии.
   if (y % 2) {
-    return wbColors[(x + 1) % 2];
+    return wbColors[x % 2];
   }
 
   // Четные игровые линии.
-  return wbColors[(x) % 2];
+  return wbColors[(x + 1) % 2];
 }
