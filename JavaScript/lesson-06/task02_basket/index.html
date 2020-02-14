@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Корзина товаров</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: Arial;
+    }
+    .myShop {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .myBasket {
+      background-color: rgb(217, 255, 179);
+      display: flex;
+      flex-direction: row;
+    }
+    .myCatalog {
+      display: flex;
+      flex-direction: column;
+    }
+    .productCard {
+      background-color: rgb(255, 251, 197);
+      display: flex;
+      flex-direction: row;
+    }
+    .productCard .photo {
+      background-color: rgb(176, 176, 255);
+      margin-right: 10px;
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+    }
+    .productCard .details {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .myBasket>.dataItem, .productCard {
+      margin: 20px
+    }
+    .label {
+      font-weight: bold;
+      color: rgb(140, 140, 140);
+    }
+  </style>
+
+  <script src="catalog.js"></script>
+  <script src="basket.js"></script>
+  <script>
+    window.addEventListener("load", evt => {
+      catalog.init();
+      basket.init();
+    });
+  </script>
+</head>
+<body>
+  <div class="myShop">
+    <div class="myBasket">
+      <div class="dataItem productCount">
+        <span class="label">Всего товаров:</span>
+        <span class="value">0</span>
+        <span class="units">шт.</span>
+      </div>
+
+      <div class="dataItem totalAmount">
+        <span class="label">Общая цена:</span>
+        <span class="value">0</span>
+        <span class="units">руб.</span>
+      </div>
+    </div>
+
+    <div class="myCatalog">
+      <div class="productCard">
+        <img class="photo" src="images/green.png"/>
+        <div class="details">
+          <div class="dataItem name">
+            <span class="label">Название:</span>
+            <span class="value">Какой-то товар</span>
+          </div>
+          <div class="dataItem price">
+            <span class="label">Цена:</span>
+            <span class="value">0</span>
+            <span class="currency">руб.</span>
+          </div>
+          <button>Купить</button>
+        </div>
+      </div>
+
+      <div class="productCard">
+        <img class="photo" src="images/green.png"/>
+        <div class="details">
+          <div class="dataItem name">
+            <span class="label">Название:</span>
+            <span class="value">Какой-то товар</span>
+          </div>
+          <div class="dataItem price">
+            <span class="label">Цена:</span>
+            <span class="value">0</span>
+            <span class="currency">руб.</span>
+          </div>
+          <button>Купить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>
