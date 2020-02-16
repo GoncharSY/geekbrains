@@ -1,3 +1,10 @@
+<!--
+  2 Реализовать модуль корзины. У каждого товара есть кнопка «Купить», при 
+  нажатии на которую происходит добавление имени и цены товара в блок корзины. 
+  Корзина должна уметь считать общую сумму заказа. Один товар можно добавить 
+  несколько раз.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,18 +16,18 @@
       height: 100%;
       font-family: Arial;
     }
-    .myShop {
+    .myApp {
       width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
     }
-    .myBasket {
+    .productBasket {
       background-color: rgb(217, 255, 179);
       display: flex;
       flex-direction: row;
     }
-    .myCatalog {
+    .productCatalog {
       display: flex;
       flex-direction: column;
     }
@@ -42,8 +49,11 @@
       justify-content: space-around;
     }
 
-    .myBasket>.dataItem, .productCard {
+    .productBasket>.dataItem, .productCard {
       margin: 20px
+    }
+    .dataItem>span {
+      margin-right: 5px;
     }
     .label {
       font-weight: bold;
@@ -51,65 +61,12 @@
     }
   </style>
 
-  <script src="catalog.js"></script>
-  <script src="basket.js"></script>
+  <script src="app.js"></script>
   <script>
-    window.addEventListener("load", evt => {
-      catalog.init();
-      basket.init();
-    });
+    window.addEventListener("load", evt => app.init());
   </script>
 </head>
 <body>
-  <div class="myShop">
-    <div class="myBasket">
-      <div class="dataItem productCount">
-        <span class="label">Всего товаров:</span>
-        <span class="value">0</span>
-        <span class="units">шт.</span>
-      </div>
-
-      <div class="dataItem totalAmount">
-        <span class="label">Общая цена:</span>
-        <span class="value">0</span>
-        <span class="units">руб.</span>
-      </div>
-    </div>
-
-    <div class="myCatalog">
-      <div class="productCard">
-        <img class="photo" src="images/green.png"/>
-        <div class="details">
-          <div class="dataItem name">
-            <span class="label">Название:</span>
-            <span class="value">Какой-то товар</span>
-          </div>
-          <div class="dataItem price">
-            <span class="label">Цена:</span>
-            <span class="value">0</span>
-            <span class="currency">руб.</span>
-          </div>
-          <button>Купить</button>
-        </div>
-      </div>
-
-      <div class="productCard">
-        <img class="photo" src="images/green.png"/>
-        <div class="details">
-          <div class="dataItem name">
-            <span class="label">Название:</span>
-            <span class="value">Какой-то товар</span>
-          </div>
-          <div class="dataItem price">
-            <span class="label">Цена:</span>
-            <span class="value">0</span>
-            <span class="currency">руб.</span>
-          </div>
-          <button>Купить</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
+  <div class="myApp"></div>
 </body>
 </html>
