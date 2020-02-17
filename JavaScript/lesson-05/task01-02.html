@@ -1,0 +1,38 @@
+<!--
+  1. Создать функцию, генерирующую шахматную доску. При этом можно 
+  использовать любые html-теги по своему желанию.
+
+  Доска должна быть разлинована соответствующим образом, т.е. чередовать черные 
+  и белые ячейки.
+  
+  Строки должны нумероваться числами от 1 до 8, столбцы – латинскими буквами 
+  A, B, C, D, E, F, G, H.
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Шахматная доска</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+    <script src="task01.js"></script>
+    <script src="task02.js"></script>
+    <script>
+      window.addEventListener("load", () => {
+        const board = createChessBoard();
+
+        setInitialPositions(board);
+        document.body.append(board);
+      });
+    </script>
+  </head>
+  <body>
+    <!-- Здесь появится шахматная доска -->
+  </body>
+</html>
