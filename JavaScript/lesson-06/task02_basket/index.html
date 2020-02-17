@@ -1,0 +1,72 @@
+<!--
+  2 Реализовать модуль корзины. У каждого товара есть кнопка «Купить», при 
+  нажатии на которую происходит добавление имени и цены товара в блок корзины. 
+  Корзина должна уметь считать общую сумму заказа. Один товар можно добавить 
+  несколько раз.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Корзина товаров</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      font-family: Arial;
+    }
+    .myApp {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .productBasket {
+      background-color: rgb(217, 255, 179);
+      display: flex;
+      flex-direction: row;
+    }
+    .productCatalog {
+      display: flex;
+      flex-direction: column;
+    }
+    .productCard {
+      background-color: rgb(255, 251, 197);
+      display: flex;
+      flex-direction: row;
+    }
+    .productCard .photo {
+      background-color: rgb(176, 176, 255);
+      margin-right: 10px;
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+    }
+    .productCard .details {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .productBasket>.dataItem, .productCard {
+      margin: 20px
+    }
+    .dataItem>span {
+      margin-right: 5px;
+    }
+    .label {
+      font-weight: bold;
+      color: rgb(140, 140, 140);
+    }
+  </style>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener("load", evt => app.init());
+  </script>
+</head>
+<body>
+  <div class="myApp"></div>
+</body>
+</html>
