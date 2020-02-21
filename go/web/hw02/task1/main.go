@@ -13,8 +13,8 @@ import (
 
 // RequesBody - описывает структуру тела запроса.
 type RequesBody struct {
-	Key   string   `json:"key"`
-	Links []string `json:"links"`
+	Key   string   `json:"search"`
+	Links []string `json:"sites"`
 }
 
 func main() {
