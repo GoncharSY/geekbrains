@@ -29,7 +29,6 @@ func main() {
 
 // Обработать запрос.
 func onRequest(res http.ResponseWriter, req *http.Request) {
-	fmt.Println()
 	fmt.Println("Пришел запрос:", req.URL.Path)
 	fmt.Println("Метод запроса:", req.Method)
 
