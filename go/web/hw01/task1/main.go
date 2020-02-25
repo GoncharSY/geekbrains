@@ -1,24 +1,25 @@
 package main
 
-import "fmt"
-import "errors"
-import "net/http"
-import "io/ioutil"
-import "strings"
-import "sync"
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strings"
+	"sync"
+)
 
 func main() {
-	var keyString = "<body"
+	var keyString = "<script>"
 	var links = []string{
 		"https://yandex.ru",
 		"https://google.com",
 		"https://rambler.ru",
 		"https://yahoo.com",
-		"https://aaaaabbbbbccccc",
+		"https://aaaaabbbbbccccc.com",
 		"https://xxxxxyyyyyzzzzz",
 	}
 
-	fmt.Println()
 	fmt.Println("Ключевая строка:", keyString)
 
 	if results, err := findKey(keyString, links); err != nil {
@@ -31,49 +32,50 @@ func main() {
 			fmt.Println("-", results[i])
 		}
 	}
-
-	fmt.Println()
 }
 
 // Искать ключевую строку по адресам.
 func findKey(key string, links []string) (results []string, err error) {
 	var wgr sync.WaitGroup
+	var mux sync.Mutex
 
-	if key == "" {
+	if len(key) == 0 {
 		err = errors.New("Ключевая строка пуста")
 		return
 	}
 
 	if len(links) == 0 {
-		err = errors.New("Список ссылок пуст")
-		return
+		fmt.Println("Список ссылок пуст")
 	}
 
 	wgr.Add(len(links))
 
 	for idx := range links {
 		go func(link string) {
+			defer wgr.Done()
+
+			var err error
 			var res *http.Response
 			var body []byte
 
-			defer wgr.Done()
-
 			// Запросим данные.
 			if res, err = http.Get(link); err != nil {
-				err = nil
+				fmt.Println(err)
 				return
 			}
 			defer res.Body.Close()
 
 			// Прочтем ответ.
 			if body, err = ioutil.ReadAll(res.Body); err != nil {
-				err = nil
+				fmt.Println(err)
 				return
 			}
 
 			// Поищем ключевую строку.
 			if strings.Contains(string(body), key) {
+				mux.Lock()
 				results = append(results, link)
+				mux.Unlock()
 			}
 		}(links[idx])
 	}
