@@ -35,56 +35,68 @@ func onRequest(res http.ResponseWriter, req *http.Request) {
 
 	res.Header().Set("Access-Control-Allow-Origin", "*")
 
-	switch req.Method {
-	case "POST":
-		// Обработка ниже.
-	case "GET":
+	if req.Method == "GET" {
 		res.WriteHeader(200)
 		res.Write([]byte("Используй POST-запрос!"))
 		return
-	default:
+	} else if req.Method != "POST" {
 		res.WriteHeader(404)
 		res.Write([]byte(""))
 		return
 	}
 
-	var err error
-	var body []byte
-	var resBody []byte
-	var reqBody = RequesBody{}
-	var okLinks []string
-	var statusCode int = 200
+	var (
+		err     error
+		okLinks = make([]string, 0)
+		body    = make([]byte, 0)
+		resBody = make([]byte, 0)
+		reqBody = RequesBody{}
+	)
 
 	// Получим тело запроса.
 	if body, err = ioutil.ReadAll(req.Body); err != nil {
-		//fmt.Println("Не удалось прочесть тело запроса:", err)
-		statusCode = 500
-		resBody = []byte("Не удалось прочесть тело запроса:" + err.Error())
+		res.WriteHeader(500)
+		res.Write([]byte("Не удалось прочесть тело запроса:" + err.Error()))
+		return
 	} else if len(body) == 0 {
-		// fmt.Println("Тело запроса пусто")
-		resBody = []byte("Тело запроса пусто")
-	} else if err := json.Unmarshal(body, &reqBody); err != nil {
-		//fmt.Println("Не удалось разобрать JSON:", err)
-		statusCode = 500
-		resBody = []byte("Не удалось разобрать JSON: " + err.Error())
-	} else if okLinks, err = findKey(reqBody.Key, reqBody.Links); err != nil {
-		//fmt.Println(err)
-		resBody = []byte(err.Error())
-	} else if resBody, err = json.Marshal(okLinks); err != nil {
-		//fmt.Println("Не удалось создать тело ответа:", err)
-		statusCode = 500
-		resBody = []byte("Не удалось создать тело ответа: " + err.Error())
+		res.WriteHeader(200)
+		res.Write([]byte("Тело запроса пусто"))
+		return
 	}
 
-	res.WriteHeader(statusCode)
+	// Разберем тело запроса.
+	if err := json.Unmarshal(body, &reqBody); err != nil {
+		res.WriteHeader(500)
+		res.Write([]byte([]byte("Не удалось разобрать JSON: " + err.Error())))
+		return
+	}
+
+	// Выполним поиск ключа по ссылкам.
+	if okLinks, err = findKey(reqBody.Key, reqBody.Links); err != nil {
+		res.WriteHeader(200)
+		res.Write([]byte(err.Error()))
+		return
+	}
+
+	// Подготовим ответ.
+	if resBody, err = json.Marshal(okLinks); err != nil {
+		res.WriteHeader(500)
+		res.Write([]byte("Не удалось создать тело ответа: " + err.Error()))
+		return
+	}
+
+	res.WriteHeader(200)
 	res.Write(resBody)
 }
 
 // Искать ключевую строку по адресам.
 func findKey(key string, links []string) (results []string, err error) {
-	var wgr sync.WaitGroup
+	var (
+		wgr sync.WaitGroup
+		mux sync.Mutex
+	)
 
-	if key == "" {
+	if len(key) == 0 {
 		err = errors.New("Ключевая строка пуста")
 		return
 	}
@@ -98,24 +110,29 @@ func findKey(key string, links []string) (results []string, err error) {
 
 	for idx := range links {
 		go func(link string) {
-			var res *http.Response
-			var body []byte
-
 			defer wgr.Done()
 
+			var (
+				err  error
+				res  *http.Response
+				body = make([]byte, 0)
+			)
+
 			if res, err = http.Get(link); err != nil {
-				err = nil
+				fmt.Println(err)
 				return
 			}
 			defer res.Body.Close()
 
 			if body, err = ioutil.ReadAll(res.Body); err != nil {
-				err = nil
+				fmt.Println(err)
 				return
 			}
 
 			if strings.Contains(string(body), key) {
+				mux.Lock()
 				results = append(results, link)
+				mux.Unlock()
 			}
 		}(links[idx])
 	}
