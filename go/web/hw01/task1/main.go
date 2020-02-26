@@ -46,6 +46,7 @@ func findKey(key string, links []string) (results []string, err error) {
 
 	if len(links) == 0 {
 		fmt.Println("Список ссылок пуст")
+		return
 	}
 
 	wgr.Add(len(links))
