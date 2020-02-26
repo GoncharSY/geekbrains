@@ -6,11 +6,7 @@ import (
 	"net/http"
 )
 
-var myCookie = http.Cookie{
-	Name:   "Name_of_person",
-	Value:  "No name",
-	MaxAge: 300,
-}
+var nameOfCookie = "Name_of_person"
 
 func main() {
 	var srvMux *http.ServeMux
@@ -31,7 +27,6 @@ func onRequest(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("Метод запроса:", req.Method)
 
 	res.Header().Set("Access-Control-Allow-Origin", "*")
-	return
 }
 
 // Обработать запрос к корневому маршруту.
@@ -40,11 +35,10 @@ func onRequestRoot(res http.ResponseWriter, req *http.Request) {
 
 	if req.Method != "GET" {
 		res.WriteHeader(404)
-		res.Write([]byte(""))
+		res.Write([]byte("Доступен только метод запроса GET"))
 		return
 	}
 
-	res.WriteHeader(200)
 	res.Write([]byte("Выберите действие: get/set/delete cookie"))
 }
 
@@ -54,42 +48,44 @@ func onSetCookie(res http.ResponseWriter, req *http.Request) {
 
 	if req.Method != "GET" {
 		res.WriteHeader(404)
-		res.Write([]byte(""))
+		res.Write([]byte("Доступен только метод запроса GET"))
 		return
 	}
 
-	if cookieValue := req.FormValue("value"); len(cookieValue) != 0 {
-		myCookie.Value = cookieValue
+	var cookie = http.Cookie{
+		Name:   nameOfCookie,
+		Value:  "No name",
+		MaxAge: 300,
 	}
 
-	myCookie.MaxAge = 300
-	http.SetCookie(res, &myCookie)
+	if valueOfCookie := req.FormValue("value"); len(valueOfCookie) != 0 {
+		cookie.Value = valueOfCookie
+	}
 
-	res.WriteHeader(200)
-	res.Write([]byte("Cookie '" + myCookie.Name + "' установлен, используйте /get, чтобы получить его значение"))
+	cookie.MaxAge = 300
+	http.SetCookie(res, &cookie)
+	res.Write([]byte("Cookie '" + cookie.Name + "' установлен, используйте /get, чтобы получить его значение"))
 }
 
 // Обработать запрос на получение cookie.
 func onGetCookie(res http.ResponseWriter, req *http.Request) {
 	onRequest(res, req)
 
-	var err error
-	var cookie *http.Cookie
-
 	if req.Method != "GET" {
 		res.WriteHeader(404)
-		res.Write([]byte(""))
+		res.Write([]byte("Доступен только метод запроса GET"))
 		return
 	}
 
-	if cookie, err = req.Cookie(myCookie.Name); err != nil {
-		res.WriteHeader(200)
+	var err error
+	var cookie *http.Cookie
+
+	if cookie, err = req.Cookie(nameOfCookie); err != nil {
 		res.Write([]byte("Cookie не найден: " + err.Error()))
 		return
 	}
 
-	res.WriteHeader(200)
-	res.Write([]byte("Найдены cookie с именем '" + cookie.Name + "' и значением '" + cookie.Value + "'"))
+	res.Write([]byte("Найден cookie с именем '" + cookie.Name + "' и значением '" + cookie.Value + "'"))
 }
 
 // Обработать запрос на удаление cookie.
@@ -98,13 +94,19 @@ func onDeleteCookie(res http.ResponseWriter, req *http.Request) {
 
 	if req.Method != "GET" {
 		res.WriteHeader(404)
-		res.Write([]byte(""))
+		res.Write([]byte("Доступен только метод запроса GET"))
 		return
 	}
 
-	myCookie.MaxAge = -1
-	http.SetCookie(res, &myCookie)
+	var err error
+	var cookie *http.Cookie
 
-	res.WriteHeader(200)
-	res.Write([]byte("Cookie c именем '" + myCookie.Name + "' был удален"))
+	if cookie, err = req.Cookie(nameOfCookie); err != nil {
+		res.Write([]byte("Cookie не найден: " + err.Error()))
+		return
+	}
+
+	cookie.MaxAge = -1
+	http.SetCookie(res, cookie)
+	res.Write([]byte("Cookie c именем '" + cookie.Name + "' был удален"))
 }

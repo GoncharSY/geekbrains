@@ -29,18 +29,16 @@ func main() {
 
 // Обработать запрос.
 func onRequest(res http.ResponseWriter, req *http.Request) {
+	defer req.Body.Close()
+
 	fmt.Println("Пришел запрос:", req.URL.Path)
 	fmt.Println("Метод запроса:", req.Method)
 
 	res.Header().Set("Access-Control-Allow-Origin", "*")
 
-	if req.Method == "GET" {
-		res.WriteHeader(200)
-		res.Write([]byte("Используй POST-запрос!"))
-		return
-	} else if req.Method != "POST" {
+	if req.Method != "POST" {
 		res.WriteHeader(404)
-		res.Write([]byte(""))
+		res.Write([]byte("Доступен только метод запросов POST"))
 		return
 	}
 
@@ -58,7 +56,6 @@ func onRequest(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("Не удалось прочесть тело запроса:" + err.Error()))
 		return
 	} else if len(body) == 0 {
-		res.WriteHeader(200)
 		res.Write([]byte("Тело запроса пусто"))
 		return
 	}
@@ -72,7 +69,6 @@ func onRequest(res http.ResponseWriter, req *http.Request) {
 
 	// Выполним поиск ключа по ссылкам.
 	if okLinks, err = findKey(reqBody.Key, reqBody.Links); err != nil {
-		res.WriteHeader(200)
 		res.Write([]byte(err.Error()))
 		return
 	}
@@ -84,7 +80,6 @@ func onRequest(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	res.WriteHeader(200)
 	res.Write(resBody)
 }
 
