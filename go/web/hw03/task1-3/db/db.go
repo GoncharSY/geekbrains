@@ -43,8 +43,14 @@ type Blog struct {
 
 // Post - описывает отдельный пост в блоге.
 type Post struct {
+	Name      string `json:"name"`
 	Author    string `json:"author"`
 	CreatedAt string `json:"createdAt"`
 	Text      string `json:"text"`
 	Comments  []Post `json:"comments"`
+}
+
+// GetCommentsCount - возвращает количество комментариев к посту.
+func (p *Post) GetCommentsCount() int {
+	return len(p.Comments)
 }

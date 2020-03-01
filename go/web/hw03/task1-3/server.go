@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 
@@ -38,16 +39,32 @@ func onRequestRoot(res http.ResponseWriter, req *http.Request) {
 func onRequestBlog(res http.ResponseWriter, req *http.Request) {
 	onRequest(res, req)
 
+	if req.Method != "GET" {
+		res.WriteHeader(404)
+		res.Write([]byte("Доступен только метод запроса GET"))
+		return
+	}
+
 	var err error
 	var blog *db.Blog
 
 	if blog, err = db.GetBlog(); err != nil {
+		fmt.Println(err)
 		res.WriteHeader(404)
 		res.Write([]byte("Блог не доступен в настоящее время"))
 		return
 	}
 
-	res.Write([]byte("Обращение к блогу '" + blog.Name + "'"))
+	var tmp *template.Template
+	var tmpFile = "C:\\Users\\serge\\Documents\\GitHub\\geekbrains\\go\\web\\hw03\\task1-3\\tmp\\blog"
+
+	if tmp, err = tmp.ParseFiles(tmpFile); err != nil {
+		res.WriteHeader(500)
+		res.Write([]byte("Ошибка шаблона: " + err.Error()))
+		return
+	}
+
+	tmp.ExecuteTemplate(res, "Blog", blog)
 }
 
 // Обработать запрос для обращения к посту в блоге.
