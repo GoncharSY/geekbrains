@@ -5,21 +5,24 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 
 	"./db"
 )
 
 func main() {
 	var port string = "8080"
-	var srvMux *http.ServeMux
+	var router *mux.Router
 
-	srvMux = http.NewServeMux()
-	srvMux.HandleFunc("/blog", onRequestBlog)
-	srvMux.HandleFunc("/post/{idx}", onRequestPost)
-	srvMux.HandleFunc("/", onRequestRoot)
+	router = mux.NewRouter()
+	router.HandleFunc("/blog", onRequestBlog)
+	router.HandleFunc("/post/{idx:[0-9]+}", onRequestPost)
+	router.HandleFunc("/", onRequestRoot)
 
 	fmt.Println("Запуск сервера...")
-	log.Fatal(http.ListenAndServe(":"+port, srvMux))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
 
 // Выполнить предварительную обработку запроса.
@@ -56,7 +59,7 @@ func onRequestBlog(res http.ResponseWriter, req *http.Request) {
 	}
 
 	var tmp *template.Template
-	var tmpFile = "C:\\Users\\serge\\Documents\\GitHub\\geekbrains\\go\\web\\hw03\\task1-3\\tmp\\blog"
+	var tmpFile = ".\\tmp\\blog"
 
 	if tmp, err = tmp.ParseFiles(tmpFile); err != nil {
 		res.WriteHeader(500)
@@ -74,8 +77,21 @@ func onRequestPost(res http.ResponseWriter, req *http.Request) {
 	var err error
 	var blog *db.Blog
 	var post *db.Post
+
+	var varsMap map[string]string
 	var postIdx = 0
 	var postCnt = 0
+
+	varsMap = mux.Vars(req)
+	if idx, ok := varsMap["idx"]; !ok {
+		res.WriteHeader(400)
+		res.Write([]byte("Пост не найден"))
+		return
+	} else if postIdx, err = strconv.Atoi(idx); err != nil {
+		res.WriteHeader(400)
+		res.Write([]byte("Пост не найден: " + err.Error()))
+		return
+	}
 
 	if blog, err = db.GetBlog(); err != nil {
 		res.WriteHeader(404)
@@ -95,5 +111,5 @@ func onRequestPost(res http.ResponseWriter, req *http.Request) {
 	}
 
 	post = &blog.Posts[postIdx]
-	res.Write([]byte(fmt.Sprintf("Обращение к посту #%v от автора %v", postIdx, post.Author)))
+	res.Write([]byte(fmt.Sprintf("Обращение к посту #%v с названием '%v'", postIdx, post.Name)))
 }

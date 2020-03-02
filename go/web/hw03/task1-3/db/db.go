@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-var dataPath = "C:\\Users\\serge\\Documents\\GitHub\\geekbrains\\go\\web\\hw03\\task1-3\\db\\data.json"
+var dataPath = ".\\db\\data.json"
 var blog = Blog{}
 var errDB = fmt.Errorf("База данных не инициализинована")
 
