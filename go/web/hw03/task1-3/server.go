@@ -85,11 +85,11 @@ func onRequestPost(res http.ResponseWriter, req *http.Request) {
 	varsMap = mux.Vars(req)
 	if idx, ok := varsMap["idx"]; !ok {
 		res.WriteHeader(400)
-		res.Write([]byte("Пост не найден"))
+		res.Write([]byte("Некорректный код поста"))
 		return
 	} else if postIdx, err = strconv.Atoi(idx); err != nil {
 		res.WriteHeader(400)
-		res.Write([]byte("Пост не найден: " + err.Error()))
+		res.Write([]byte("Некорректный код поста: " + err.Error()))
 		return
 	}
 
@@ -111,5 +111,22 @@ func onRequestPost(res http.ResponseWriter, req *http.Request) {
 	}
 
 	post = &blog.Posts[postIdx]
-	res.Write([]byte(fmt.Sprintf("Обращение к посту #%v с названием '%v'", postIdx, post.Name)))
+
+	var tmp *template.Template
+	var tmpFile = ".\\tmp\\post"
+	var tmpData = struct {
+		*db.Post
+		Author string
+	}{
+		Post:   post,
+		Author: blog.Author,
+	}
+
+	if tmp, err = tmp.ParseFiles(tmpFile); err != nil {
+		res.WriteHeader(500)
+		res.Write([]byte("Ошибка шаблона: " + err.Error()))
+		return
+	}
+
+	tmp.ExecuteTemplate(res, "Post", &tmpData)
 }
