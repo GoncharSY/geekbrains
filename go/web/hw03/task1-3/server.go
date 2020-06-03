@@ -12,14 +12,22 @@ import (
 	"./db"
 )
 
+const port string = "8080"
+
 func main() {
-	var port string = "8080"
+	var staticDir http.FileSystem
+	var fileSrv http.Handler
 	var router *mux.Router
 
+	staticDir = http.Dir("./static")
+	fileSrv = http.FileServer(staticDir)
+	fileSrv = http.StripPrefix("/static/", fileSrv)
+
 	router = mux.NewRouter()
-	router.HandleFunc("/blog", onRequestBlog)
-	router.HandleFunc("/post/{idx:[0-9]+}", onRequestPost)
 	router.HandleFunc("/", onRequestRoot)
+	router.PathPrefix("/static/").Handler(fileSrv)
+	router.HandleFunc("/blog", onRequestBlog)
+	router.HandleFunc("/blog/post/{idx:[0-9]+}", onRequestPost)
 
 	fmt.Println("Запуск сервера...")
 	log.Fatal(http.ListenAndServe(":"+port, router))
