@@ -1,0 +1,38 @@
+
+{{define "Blog"}}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Блог</title>
+        <link rel="stylesheet" type="text/css" href="./static/css/blog.css">
+    </head>
+    <body>
+        <div class="blog">
+            <h1>{{.Name}}</h1>
+            <h3 class="author">Автор: {{.Author}}</h3>
+
+            <ul class="postList">
+                {{range $i, $p := .Posts}}
+                    <li class="item" data-postCode={{$i}}>
+                        {{template "Post" $p}}
+                    </li>
+                {{end}}
+            </ul>
+        </div>
+    </body>
+</html>
+{{end}}
+
+{{define "Post"}}
+<div class="post">
+    <div class="header">
+        <span class="name">{{.Name}}</span>
+        <span class="createdAt">{{.CreatedAt}}</span>
+    </div>
+    <div class="text">{{.Text}}</div>
+    <div class="footer">
+        <span class="commentsCount">Комментарии: {{.GetCommentsCount}}</span>
+    </div>
+</div>
+{{end}}

@@ -1,0 +1,40 @@
+
+{{define "Post"}}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Пост</title>
+        <link rel="stylesheet" type="text/css" href="./../../static/css/post.css">
+    </head>
+    <body>
+        <div class="post">
+            <div class="header">
+                <h1>{{.Name}}</h1>
+                <h3>{{.Author}}</h3>
+            </div>
+            <div class="body">
+                <div class="text">{{.Text}}</div>
+            </div>
+            <div class="footer">
+                <span class="date">{{.CreatedAt}}</span>
+            </div>
+            <ul class="comments">
+                {{range .Comments}}
+                    {{template "Comment" . }}
+                {{end}}
+            </ul>
+        </div>
+    </body>
+</html>
+{{end}}
+
+{{define "Comment"}}
+<li class="comment">
+    <div class="header">
+        <span class="author">{{.Author}}</span>
+        <span class="date">{{.CreatedAt}}</span>
+    </div>
+    <div class="text">{{.Text}}</div>
+</li>
+{{end}}
