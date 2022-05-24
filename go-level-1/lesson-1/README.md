@@ -8,4 +8,4 @@
 4. Написать, запустить локально и запушить на GitHub приложение Hello World.
 5. Попробовать запуск кода с помощью команды go run.
 6. Скомпилировать исполняемый файл с помощью команды go build.
-7. Попробовать работу с онлайн-песочницами "The Go Playground" и "Go Play Space".
+7. Попробовать работу с онлайн-песочницами [The Go Playground](https://go.dev/play/) и [Go Play Space](https://goplay.space/).
