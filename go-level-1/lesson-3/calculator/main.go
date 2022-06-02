@@ -50,7 +50,7 @@ func askForOperands(op string) (float64, float64) {
 	var a, b float64
 
 	switch op {
-	case "FACT":
+	case "fact":
 		fmt.Print("Введите число: ")
 		fmt.Scanln(&a)
 	default:
