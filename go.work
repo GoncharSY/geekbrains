@@ -1,0 +1,6 @@
+go 1.18
+
+use (
+	C:\Users\serge\Documents\GitHub\geekbrains\go-level-1\lesson-8\config
+	C:\Users\serge\Documents\GitHub\geekbrains\go-level-1\lesson-8\webapp
+)
