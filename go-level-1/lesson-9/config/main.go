@@ -18,6 +18,7 @@ type config struct {
 	props map[string]property
 	flags map[string]string
 	envrs map[string]string
+	jsons map[string]string
 }
 
 // Получить значение параметра из конфигурации.
@@ -29,11 +30,12 @@ func (c *config) GetValue(name string) (string, bool) {
 	if prop, ok = c.props[name]; !ok {
 		return "", false
 	}
-
 	if value, ok = c.flags[name]; ok {
 		return value, true
 	}
-
+	if value, ok = c.jsons[name]; ok {
+		return value, true
+	}
 	if value, ok = c.envrs[name]; ok {
 		return value, true
 	}
@@ -49,6 +51,11 @@ func (c *config) GetFlagConfig() map[string]string {
 // Получить конфигурацию из переменных окружения.
 func (c *config) GetEnvConfig() map[string]string {
 	return c.envrs
+}
+
+// Получить конфигурацию из json-файла.
+func (c *config) GetJsonConfig() map[string]string {
+	return c.jsons
 }
 
 // Получить конфигурацию по умолчанию.
@@ -105,11 +112,34 @@ func (c *config) Validate() map[string]error {
 	return errs
 }
 
-// Создать новую конфигурацию.
-func New() *config {
-	return &config{
+// Загрузить конфигурацию из json-файла.
+func (c *config) LoadJson(name string) error {
+	var buf = jsonConfig{}
+
+	if err := buf.load(name); err != nil {
+		return err
+	}
+
+	c.jsons = buf.toMap()
+	return nil
+}
+
+// Создать новую конфигурацию. Если указать имя json-файла, его загрузка произойдет
+// автоматически при создании объекта с конфигурацией. Иначе можно выполнить загрузку
+// json-файла отельно (где-нибудь в вызывающем коде).
+func New(file string) *config {
+	var cfg = &config{
 		props: getDefaultPropertySet(),
 		flags: getFlagConfig(),
 		envrs: getEnvConfig(),
+		jsons: make(map[string]string),
 	}
+
+	if file != "" {
+		if err := cfg.LoadJson(file); err != nil {
+			panic(fmt.Errorf("loading config file error: %w", err))
+		}
+	}
+
+	return cfg
 }
