@@ -24,7 +24,7 @@ func getDefaultPropertySet() map[string]property {
 		"db": {
 			EnvName:     "db_url",
 			FlagName:    "db",
-			Default:     "kafka:9092",
+			Default:     "postgres://default:default@db:1111",
 			Description: "Адрес базы данных приложения",
 		},
 		"jaeger": {
