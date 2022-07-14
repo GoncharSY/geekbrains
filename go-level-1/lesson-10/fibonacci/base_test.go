@@ -50,25 +50,27 @@ func TestCalculateNumber(t *testing.T) {
 	}
 
 	for _, cs := range cases {
-		val, err := CalculateNumber(cs.Input)
+		t.Run(cs.Descr, func(t *testing.T) {
+			val, err := CalculateNumber(cs.Input)
 
-		if err != nil && !cs.IsErr {
-			t.Error(
-				"For", cs.Descr,
-				"got error:", err.Error(),
-			)
-		} else if err == nil && cs.IsErr {
-			t.Error(
-				"For", cs.Descr,
-				"expected error",
-			)
-		} else if val != cs.Output {
-			t.Error(
-				"For", cs.Descr,
-				"expected", cs.Output,
-				"got", val,
-			)
-		}
+			if err != nil && !cs.IsErr {
+				t.Error(
+					"For", cs.Descr,
+					"got error:", err.Error(),
+				)
+			} else if err == nil && cs.IsErr {
+				t.Error(
+					"For", cs.Descr,
+					"expected error",
+				)
+			} else if val != cs.Output {
+				t.Error(
+					"For", cs.Descr,
+					"expected", cs.Output,
+					"got", val,
+				)
+			}
+		})
 	}
 }
 
