@@ -30,7 +30,7 @@ func makeImpPanic() (err error) {
 	return err
 }
 
-// Отлавливает паническую ситуацию и превращает ее в обычную ошибку (пробему).
+// Отлавливает паническую ситуацию и превращает ее в обычную ошибку (проблему).
 func recoverImpPanic(err *error) {
 	if pnc := recover(); pnc != nil {
 		*err = NewTrouble("panic trouble", pnc)
@@ -47,12 +47,12 @@ type Trouble struct {
 
 // Error возвращает текст описания проблемы (ошибки).
 func (t Trouble) Error() string {
-	var time = t.Time.Format(time.StampMilli)
+	var stamp = t.Time.Format(time.StampMilli)
 
 	if t.Err == nil {
-		return fmt.Sprintf("%s %s", time, t.Text)
+		return fmt.Sprintf("%s %s", stamp, t.Text)
 	} else {
-		return fmt.Sprintf("%s %s: %s", time, t.Text, t.Err.Error())
+		return fmt.Sprintf("%s %s: %s", stamp, t.Text, t.Err.Error())
 	}
 }
 
