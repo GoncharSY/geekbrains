@@ -18,7 +18,7 @@ func main() {
 	}()
 
 	go func() {
-		defer recoverPanic()
+		defer RecoverPanic()
 		panic("A-A-A!!!")
 	}()
 
@@ -26,7 +26,8 @@ func main() {
 	fmt.Println("execution completed")
 }
 
-func recoverPanic() {
+// RecoverPanic перехватывает панику и печатает сообщение в стандартный поток вывода.
+func RecoverPanic() {
 	if err := recover(); err != nil {
 		fmt.Println("recovered:", err)
 	}
