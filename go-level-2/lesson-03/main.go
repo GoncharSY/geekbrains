@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import tmp "github.com/GoncharSY/go-tmp"
 
 func main() {
-	fmt.Println("Hello")
+	tmp.SayVersion()
 }
