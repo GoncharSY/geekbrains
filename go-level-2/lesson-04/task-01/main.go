@@ -4,15 +4,18 @@ import (
 	"fmt"
 )
 
-const buffer = 100 // Максимум запущенных горутин.
+const buffer = 4   // Максимум запущенных горутин.
 const limit = 1000 // Общее число горутин.
 
 func main() {
-	var result = 0
 	var buff = make(chan struct{}, buffer)
 	var pool = make(chan struct{}, limit)
+	var box = make(chan uint, 1)
 
-	// Запуск горутин.
+	// Кладем в коробку.
+	box <- 0
+
+	// Запускаем горутины.
 	for i := 0; i < limit; i++ {
 		buff <- struct{}{}
 
@@ -21,14 +24,15 @@ func main() {
 				pool <- <-buff
 			}()
 
-			result++
+			box <- (<-box) + 1
 		}()
 	}
 
-	// Завешение горутин.
+	// Ждем завершения.
 	for i := 0; i < limit; i++ {
 		<-pool
 	}
 
-	fmt.Println("Result number:", result)
+	// Проверяем результат.
+	fmt.Println("Result number:", <-box)
 }
