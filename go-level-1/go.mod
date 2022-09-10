@@ -1,4 +1,4 @@
-module go-level-1/lesson-10/config
+module go-level-1
 
 go 1.18
 
