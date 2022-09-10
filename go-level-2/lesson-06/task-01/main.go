@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"runtime/trace"
 	"sync"
 )
 
 func main() {
+	trace.Start(os.Stderr)
+	defer trace.Stop()
+
 	var mtx = sync.Mutex{}
 	var wgr = sync.WaitGroup{}
 	var res = 0
