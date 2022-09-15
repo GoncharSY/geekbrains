@@ -1,2 +1,3 @@
 github.com/GoncharSY/go-tmp/v2 v2.0.0 h1:jwrUet2fu6jI9/pUKD4uq2sFQmqgBVqifCrfy9kgezk=
 github.com/GoncharSY/go-tmp/v2 v2.0.0/go.mod h1:NRyPfUMfEGBLeaXP5ZcvHyDLqBUW8Ty+xy4PxIxv9yM=
+golang.org/x/text v0.3.7 h1:olpwvP2KacW1ZWvsR7uQhoyTYvKAupfQrRGBFM352Gk=
