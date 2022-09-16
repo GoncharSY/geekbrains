@@ -53,9 +53,13 @@ func assignValues(structure reflect.Value, values map[string]any) error {
 	return nil
 }
 
-// Присвоить новое значение полю структуры.
+// Присвоить новое значение полю структуры. NIL-значения игнорируются.
 // Если нельзя присвоить как есть, то будет попытка конвертировать.
 func assignField(field reflect.Value, value any) error {
+	if value == nil {
+		return nil
+	}
+
 	var newV = reflect.ValueOf(value)
 	var newT = newV.Type()
 	var actT = field.Type()
