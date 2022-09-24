@@ -1,4 +1,4 @@
-package main
+package duplicate
 
 import (
 	"fmt"
@@ -53,4 +53,22 @@ func (file *File) FindDuplicates(dir string) []File {
 	})
 
 	return res
+}
+
+// DeleteDuplicates removes duplicates of the file and returns list of them.
+func (file *File) DeleteDuplicates(dir string) []File {
+	var dps = file.FindDuplicates(dir)
+	var dls = make([]File, 0, len(dps))
+
+	for i := range dps {
+		if os.SameFile(file.Info, dps[i].Info) {
+			continue
+		} else if err := os.Remove(dps[i].Path); err != nil {
+			panic(err)
+		} else {
+			dls = append(dls, dps[i])
+		}
+	}
+
+	return dls
 }
