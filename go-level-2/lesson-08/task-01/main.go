@@ -1,46 +1,55 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"go-level-2/lesson-08/task-01/duplicate"
+)
 
 func main() {
-	var cfg = NewConfig()
+	var cfg = duplicate.NewConfig()
 
 	fmt.Println(cfg)
 	fmt.Println()
 
 	switch cfg.Action {
-	case Find:
-		if cfg.File == "" {
-			printAllDuplicates(FindAllDuplicates(cfg.Folder))
-		} else {
-			printDuplicates(NewFile(cfg.File).FindDuplicates(cfg.Folder), "")
-		}
-	case Create:
-		fmt.Println("Functionality in development")
-	case Delete:
-		fmt.Println("Functionality in development")
+	case duplicate.Find:
+		findDuplicates(cfg)
+	case duplicate.Create:
+		createDuplicates(cfg)
+	case duplicate.Delete:
+		deleteDuplicates(cfg)
 	}
 }
 
-func printDuplicates(files []File, prefix string) {
-	if len(files) == 0 {
-		fmt.Println("No duplicates found")
-	}
-
-	for j, file := range files {
-		fmt.Printf("%v%v: %v\n", prefix, j+1, file.Path)
+// findDuplicates finds and prints file duplicates.
+func findDuplicates(cfg *duplicate.Config) {
+	if cfg.File == "" {
+		var dup = duplicate.FindAllDuplicates(cfg.Folder)
+		duplicate.PrintAllDuplicates(dup)
+	} else {
+		var ent = duplicate.NewFile(cfg.File)
+		var dup = ent.FindDuplicates(cfg.Folder)
+		duplicate.PrintDuplicates(dup, "")
 	}
 }
 
-func printAllDuplicates(files [][]File) {
-	if len(files) == 0 {
-		fmt.Println("No duplicates found")
+// deleteDuplicates deletes duplicates and prints paths of deleted files.
+func deleteDuplicates(cfg *duplicate.Config) {
+	if cfg.File == "" {
+		var dup = duplicate.DeleteAllDuplicates(cfg.Folder)
+		duplicate.PrintAllFiles(dup)
+	} else {
+		var ent = duplicate.NewFile(cfg.File)
+		var dup = ent.DeleteDuplicates(cfg.Folder)
+		duplicate.PrintDuplicates(dup, "")
 	}
+}
 
-	for i, dups := range files {
-		if len(dups) > 1 {
-			fmt.Printf("%v:\n", i+1)
-			printDuplicates(dups, fmt.Sprintf("- %v.", i+1))
-		}
+// createDuplicates creates duplicates and prints paths of created files.
+func createDuplicates(cfg *duplicate.Config) {
+	if cfg.File == "" {
+		fmt.Println("Please specify the original file path (flag \"-file\")")
+	} else {
+		fmt.Println("Functionality in development")
 	}
 }
