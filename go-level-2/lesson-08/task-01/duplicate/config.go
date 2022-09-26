@@ -6,36 +6,36 @@ import (
 	"fmt"
 )
 
+// The type for actions (find/delete/create).
 type Action string
 
 const (
-	Find   = "find"
-	Delete = "delete"
-	Create = "create"
+	Find   = "find"   // Action for find duplicates.
+	Delete = "delete" // Action for deleting duplicates.
+	Create = "create" // Action for creating duplicates.
 )
 
+// NewConfig creates new config and returns pointer to it.
 func NewConfig() *Config {
 	var cfg = Config{
-		Folder:  "./tmp",
-		File:    "",
-		Action:  "find",
-		Confirm: true,
+		Folder: "./tmp",
+		File:   "",
+		Action: "find",
 	}
 
 	flag.StringVar(&cfg.Folder, "folder", cfg.Folder, "The name of the `directory` to search")
 	flag.StringVar(&cfg.File, "file", cfg.File, "Searched file `name`")
 	flag.Func("action", "Performing action `name`: find/delete/create (default \"find\")", parseAction(&cfg))
-	flag.BoolVar(&cfg.Confirm, "confirm", cfg.Confirm, "File deletion confirmation (for -action=delete)")
 	flag.Parse()
 
 	return &cfg
 }
 
+// The struct for configurations.
 type Config struct {
-	Folder  string
-	File    string
-	Action  Action
-	Confirm bool
+	Folder string // Path to derictory when will be find.
+	File   string // Path to file which will be used like original.
+	Action Action // Action for execution.
 }
 
 func (cfg *Config) String() string {
@@ -46,6 +46,7 @@ func (cfg *Config) String() string {
 	)
 }
 
+// parseAction returns parser for 'action' flag.
 func parseAction(cfg *Config) func(string) error {
 	return func(act string) error {
 		switch act {

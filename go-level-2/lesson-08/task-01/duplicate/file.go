@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// Creates file-description object and returns pointer of to it's.
 func NewFile(path string) *File {
 	var file *os.File
 	var err error
@@ -26,11 +27,13 @@ func NewFile(path string) *File {
 	}
 }
 
+// The type for file description.
 type File struct {
 	Path string
 	Info os.FileInfo
 }
 
+// FindDuplicates finds and returns files which have same name and size like the receiver.
 func (file *File) FindDuplicates(dir string) []File {
 	var res = make([]File, 0, 10)
 	var dfs = getDirFS(dir)

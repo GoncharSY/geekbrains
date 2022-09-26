@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+// FindAllDuplicates find and returns file duplicates that grouped.
 func FindAllDuplicates(dir string) [][]File {
 	var res0 = make(map[string][]File)
 	var res1 = make([][]File, 0, 10)
@@ -24,6 +25,7 @@ func FindAllDuplicates(dir string) [][]File {
 	return res1
 }
 
+// getDirFS returns the hierarchical file system of directory.
 func getDirFS(dir string) fs.FS {
 	if inf, err := os.Stat(dir); err != nil {
 		panic(err)
@@ -34,6 +36,7 @@ func getDirFS(dir string) fs.FS {
 	}
 }
 
+// groupDuplicates returns function which groups duplicate-files.
 func groupDuplicates(paths *map[string][]File, dir string) func(string, fs.DirEntry, error) error {
 	return func(pth string, ent fs.DirEntry, err error) error {
 		var key string
