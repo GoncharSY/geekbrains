@@ -10,11 +10,11 @@ import (
 // New создает новый сервер и возвращает указатель на него.
 func New(host, port string, ctx context.Context) *Structure {
 	if host == "" {
-		host = "localhost"
+		host = DefaultHost
 	}
 
 	if port == "" {
-		port = "9000"
+		port = DefaultPort
 	}
 
 	if ctx == nil {
@@ -29,7 +29,7 @@ func New(host, port string, ctx context.Context) *Structure {
 		Config:       net.ListenConfig{KeepAlive: time.Minute},
 		ConnectGroup: sync.WaitGroup{},
 
-		Host: "localhost",
-		Port: "9000",
+		Host: host,
+		Port: port,
 	}
 }

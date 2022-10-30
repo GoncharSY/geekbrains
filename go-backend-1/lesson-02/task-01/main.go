@@ -12,9 +12,6 @@ import (
 	"strings"
 )
 
-const DefaultHost = "localhost"
-const DefaultPort = "9000"
-
 func main() {
 	var mode string
 
@@ -33,7 +30,7 @@ func main() {
 
 func startClient() {
 	var ctx, _ = signal.NotifyContext(context.Background(), os.Interrupt)
-	var addr = fmt.Sprintf("%s:%s", DefaultHost, DefaultPort)
+	var addr = fmt.Sprintf("%s:%s", server.DefaultHost, server.DefaultPort)
 
 	log.Println("client starting with address: ", addr)
 	log.Println(strings.Repeat("=", 50))
@@ -48,7 +45,7 @@ func startClient() {
 
 func startServer() {
 	var ctx, _ = signal.NotifyContext(context.Background(), os.Interrupt)
-	var srv = server.New(DefaultHost, DefaultPort, ctx)
+	var srv = server.New(server.DefaultHost, server.DefaultPort, ctx)
 
 	if err := srv.Start(); err != nil {
 		log.Fatal(err)
