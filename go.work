@@ -3,4 +3,5 @@ go 1.18
 use (
 	./go-level-1
 	./go-level-2
+	./go-backend-1
 )
