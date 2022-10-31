@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Создать новый чат-клиент и вернуть указатель на него.
 func New(host, port string) *Structure {
 	return &Structure{
 		Host: host,
