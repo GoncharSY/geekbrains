@@ -30,9 +30,18 @@ type Structure struct {
 //
 //
 
+// Проверить, наличие клиента под указанным именем.
+func (srv *Structure) HasClient(name string) bool {
+	_, ok := srv.Clients[name]
+	return ok
+}
+
+//
+//
+
 // Добавить клиента в чат.
 func (srv *Structure) AddClient(cli *Client) error {
-	if _, ok := srv.Clients[cli.Name]; ok {
+	if srv.HasClient(cli.Name) {
 		return errors.New("already exists")
 	}
 
@@ -46,7 +55,7 @@ func (srv *Structure) AddClient(cli *Client) error {
 
 // Удалить клиента из чата.
 func (srv *Structure) RemoveClient(cli *Client) {
-	if _, ok := srv.Clients[cli.Name]; ok {
+	if srv.HasClient(cli.Name) {
 		delete(srv.Clients, cli.Name)
 		srv.ClientGroup.Done()
 	}
