@@ -5,6 +5,7 @@ import (
 	"net"
 )
 
+// Запустить сервер.
 func (srv *Structure) Start() error {
 	var ctx = srv.Context
 	var ntw = "tcp"
@@ -21,6 +22,14 @@ func (srv *Structure) Start() error {
 	return err
 }
 
+//
+//
+
+// Начать обработку взаимодействия сервера с клиентами.
+// Клиенты могут:
+//   - Присоединяться к чату
+//   - Покидать чать
+//   - Отправлять сообщения в чат
 func (srv *Structure) StartProcessing() {
 	for {
 		select {
@@ -46,6 +55,10 @@ func (srv *Structure) StartProcessing() {
 	}
 }
 
+//
+//
+
+// Начать процесс приема входящих соединений.
 func (srv *Structure) StartAccepting() {
 	for {
 		if con, err := srv.Listener.Accept(); err != nil {
@@ -56,20 +69,55 @@ func (srv *Structure) StartAccepting() {
 	}
 }
 
+//
+//
+
+// Начать работу с отдельным клиентом.
 func (srv *Structure) StartClient(con net.Conn) {
 	var cli = NewClient(con)
-	var nme = cli.Name
+	srv.StartAuthorization(cli)
+	srv.StartMessaging(cli)
+}
 
-	cli.Send("You are " + nme)
-	srv.Entering <- cli
+//
+//
 
+// Начать процесс авторизации клиента в чате.
+func (srv *Structure) StartAuthorization(cli *Client) {
+	for {
+		cli.Send("Enter your name")
+
+		select {
+		case <-srv.Context.Done():
+			cli.Stop()
+		case nme, opn := <-cli.Messaging:
+			if !opn {
+				return
+			} else if _, ok := srv.Clients[nme]; ok {
+				cli.Send(nme + " already exists")
+				continue
+			} else {
+				cli.Name = nme
+				cli.Send("Hi " + nme + "!")
+				srv.Entering <- cli
+				return
+			}
+		}
+	}
+}
+
+//
+//
+
+// Начать обмен сообщениями клиента с чатом.
+func (srv *Structure) StartMessaging(cli *Client) {
 	for {
 		select {
 		case <-srv.Context.Done():
 			cli.Stop()
 		case msg, ok := <-cli.Messaging:
 			if ok {
-				srv.Messaging <- nme + ": " + msg
+				srv.Messaging <- cli.Name + ": " + msg
 			} else {
 				srv.Leaving <- cli
 				return

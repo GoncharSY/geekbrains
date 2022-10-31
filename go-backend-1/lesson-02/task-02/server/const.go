@@ -1,4 +1,4 @@
 package server
 
-const DefaultHost = "localhost"
-const DefaultPort = "9001"
+const DefaultHost = "localhost" // Имя хоста по умолчанию.
+const DefaultPort = "9001"      // Порт по умолчанию.

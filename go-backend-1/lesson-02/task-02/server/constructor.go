@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Создать новый чат-сервер и вернуть указатель на него.
 func New(host, port string) *Structure {
 	var ctx context.Context
 	var ccl context.CancelFunc
