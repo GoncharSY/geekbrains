@@ -31,6 +31,7 @@ func main() {
 	}
 }
 
+// Запустить новый чат-клиент.
 func startClient() {
 	var ctx, _ = signal.NotifyContext(context.Background(), os.Interrupt)
 	var cli = client.New(host, port)
@@ -54,6 +55,7 @@ func startClient() {
 	log.Println("client stopped")
 }
 
+// Запустить новый чат-сервер.
 func startServer() {
 	var ctx, _ = signal.NotifyContext(context.Background(), os.Interrupt)
 	var srv = server.New(host, port)
