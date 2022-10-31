@@ -93,6 +93,8 @@ func (srv *Structure) StartAuthorization(cli *Client) {
 		case nme, opn := <-cli.Messaging:
 			if !opn {
 				return
+			} else if nme == "" {
+				continue
 			} else if _, ok := srv.Clients[nme]; ok {
 				cli.Send(nme + " already exists")
 				continue
