@@ -1,10 +1,12 @@
 package server
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"log"
 	"net"
+	"os"
 	"time"
 )
 
@@ -20,6 +22,9 @@ func (srv *Structure) Start() error {
 		return err
 	} else {
 		srv.Listener = lis
+		go srv.StartProcessing()
+		go srv.StartMessaging()
+		go srv.StartTicking()
 		go srv.StartAccepting()
 	}
 
@@ -37,29 +42,80 @@ func (srv *Structure) StartAccepting() {
 		if err != nil {
 			log.Println(err)
 			return
-		} else {
-			log.Println("new connection with address:", con.RemoteAddr())
-			go srv.StartConnect(con)
+		}
+
+		go srv.StartConnect(con)
+	}
+}
+
+// Начать обработку соединений.
+func (srv *Structure) StartProcessing() {
+	for {
+		select {
+		case conn := <-srv.Entering:
+			if err := srv.AddConnection(conn); err != nil {
+				log.Println("entering error:", err)
+			} else {
+				log.Println("joined:", conn.RemoteAddr())
+			}
+		case addr := <-srv.Leaving:
+			srv.RemoveConnection(addr)
+			log.Println("disconnected:", addr)
+		case time := <-srv.Ticking:
+			srv.Announce(time)
+		case mssg := <-srv.Messaging:
+			srv.Announce(mssg)
+		case <-srv.Context.Done():
+			return
+		}
+	}
+}
+
+// Начать тиканье сервера.
+func (srv *Structure) StartTicking() {
+	var tick = time.NewTicker(time.Second)
+
+	defer tick.Stop()
+
+	for {
+		select {
+		case time := <-tick.C:
+			srv.Ticking <- fmt.Sprintf("time: %v\n", time)
+		case <-srv.Context.Done():
+			return
+		}
+	}
+}
+
+// Начать пересылку сообщений.
+func (srv *Structure) StartMessaging() {
+	var inpt = bufio.NewScanner(os.Stdin)
+
+	for inpt.Scan() {
+		select {
+		case <-srv.Context.Done():
+			return
+		default:
+			srv.Messaging <- inpt.Text() + "\n"
 		}
 	}
 }
 
 // Начать обработку соединения.
 func (srv *Structure) StartConnect(con net.Conn) {
-	srv.ConnectGroup.Add(1)
-	defer srv.StopConnect(con)
+	srv.Entering <- con
 
-	tck := time.NewTicker(time.Second)
-	defer tck.Stop()
+	defer func() {
+		con.Close()
+		srv.Leaving <- con.RemoteAddr().String()
+	}()
 
-	for {
+	for bufio.NewScanner(con).Scan() {
 		select {
-		case time := <-tck.C:
-			if _, err := fmt.Fprintf(con, "time: %s\n", time); err != nil {
-				return
-			}
 		case <-srv.Context.Done():
 			return
+		default:
+			time.Sleep(time.Second)
 		}
 	}
 }

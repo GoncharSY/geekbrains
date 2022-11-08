@@ -8,7 +8,7 @@ import (
 )
 
 // New создает новый сервер и возвращает указатель на него.
-func New(host, port string, ctx context.Context) *Structure {
+func New(host, port string) *Structure {
 	if host == "" {
 		host = DefaultHost
 	}
@@ -17,19 +17,26 @@ func New(host, port string, ctx context.Context) *Structure {
 		port = DefaultPort
 	}
 
-	if ctx == nil {
-		ctx = context.Background()
-	}
+	var ctx context.Context
+	var ccl context.CancelFunc
 
-	ctx, cancel := context.WithCancel(ctx)
+	ctx = context.Background()
+	ctx, ccl = context.WithCancel(ctx)
 
 	return &Structure{
-		Context:      ctx,
-		Cancel:       cancel,
-		Config:       net.ListenConfig{KeepAlive: time.Minute},
+		Context: ctx,
+		Cancel:  ccl,
+		Config:  net.ListenConfig{KeepAlive: time.Minute},
+
+		Connections:  make(map[string]net.Conn),
 		ConnectGroup: sync.WaitGroup{},
 
 		Host: host,
 		Port: port,
+
+		Entering:  make(chan net.Conn, 10),
+		Leaving:   make(chan string, 10),
+		Ticking:   make(chan string, 10),
+		Messaging: make(chan string, 10),
 	}
 }

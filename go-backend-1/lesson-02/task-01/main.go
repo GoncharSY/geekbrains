@@ -45,7 +45,7 @@ func startClient() {
 
 func startServer() {
 	var ctx, _ = signal.NotifyContext(context.Background(), os.Interrupt)
-	var srv = server.New(server.DefaultHost, server.DefaultPort, ctx)
+	var srv = server.New(server.DefaultHost, server.DefaultPort)
 
 	if err := srv.Start(); err != nil {
 		log.Fatal(err)
