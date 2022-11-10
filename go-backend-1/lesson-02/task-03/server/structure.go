@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"go-backend-1/lesson-02/task-03/server/player"
+	"go-backend-1/lesson-02/task-03/server/quest"
 	"log"
 	"net"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -21,9 +23,9 @@ type Structure struct {
 	Config   net.ListenConfig
 	Listener net.Listener
 
-	Players map[string]*player.Structure
-	Qestion string
-	AnsAcc  sync.Mutex
+	Players  map[string]*player.Structure
+	Question *quest.Structure
+	QuestMtx sync.Mutex
 
 	Broadcast chan string
 }
@@ -130,9 +132,9 @@ func (srv *Structure) startPlay(conn net.Conn) {
 }
 
 func (srv *Structure) startNewQuest() {
-	time.Sleep(time.Second) // TODO: delete it
-	srv.Announce(fmt.Sprintf("Please enter answer for %v:\n", srv.GetQuestion()))
-	log.Println("New game started:", srv.GetQuestion())
+	srv.Question.Reset()
+	srv.Announce(fmt.Sprintf("Please enter answer for %v:\n", srv.Question))
+	log.Println("New game started:", srv.Question)
 }
 
 // ======================================================================================
@@ -184,26 +186,24 @@ func (srv *Structure) askName(p *player.Structure) error {
 // QUESTION AND ANSWER ==================================================================
 // ======================================================================================
 
-func (srv *Structure) GetQuestion() string {
-	return fmt.Sprintf("%v %v %v", 2, "+", 3)
-}
-
-func (srv *Structure) GetAnswer() string {
-	return "5"
-}
-
 func (srv *Structure) isCorrect(ans string) bool {
-	return ans == srv.GetAnswer()
+	if val, err := strconv.Atoi(ans); err != nil {
+		return false
+	} else {
+		return srv.Question.IsSolution(val)
+	}
 }
 
 func (srv *Structure) acceptAnswer(ans string, plr *player.Structure) {
-	srv.AnsAcc.Lock()
-	defer srv.AnsAcc.Unlock()
+	srv.QuestMtx.Lock()
+	defer srv.QuestMtx.Unlock()
 
 	if srv.isCorrect(ans) {
 		log.Print(plr.Name + " won!\n")
 		srv.Announce(plr.Name + " won!\n")
+		time.Sleep(time.Second)
 		srv.Announce("New game is starting...\n")
+		time.Sleep(time.Second)
 		srv.startNewQuest()
 	} else {
 		plr.Send("Your answer is wrong!\n")
@@ -212,5 +212,5 @@ func (srv *Structure) acceptAnswer(ans string, plr *player.Structure) {
 }
 
 func (srv *Structure) askAnswer(plr *player.Structure) {
-	plr.Send(fmt.Sprintf("Please enter answer for %v:\n", srv.GetQuestion()))
+	plr.Send(fmt.Sprintf("Please enter integer answer for %v:\n", srv.Question))
 }

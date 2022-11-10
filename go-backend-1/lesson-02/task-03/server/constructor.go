@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"go-backend-1/lesson-02/task-03/server/player"
+	"go-backend-1/lesson-02/task-03/server/quest"
 	"net"
 	"sync"
 	"time"
@@ -33,9 +34,9 @@ func New(host, port string) *Structure {
 		Host: host,
 		Port: port,
 
-		Players: make(map[string]*player.Structure),
-		Qestion: "2 + 3",
-		AnsAcc:  sync.Mutex{},
+		Players:  make(map[string]*player.Structure),
+		Question: quest.New(),
+		QuestMtx: sync.Mutex{},
 
 		Broadcast: make(chan string, 10),
 	}
