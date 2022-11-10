@@ -4,13 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-backend-1/lesson-02/task-03/server/player"
-	"go-backend-1/lesson-02/task-03/server/quest"
 	"log"
 	"net"
 	"strconv"
 	"sync"
 	"time"
+
+	"go-backend-1/lesson-02/task-03/server/player"
+	"go-backend-1/lesson-02/task-03/server/quest"
 )
 
 type Structure struct {
@@ -114,7 +115,7 @@ func (srv *Structure) startPlay(conn net.Conn) {
 	}
 
 	log.Println("Player " + plr.Name + " joined")
-	plr.Send(fmt.Sprintf("Welcome to the game, %v!\n", plr.Name))
+	plr.Send(fmt.Sprintf(FormatOfWelcome, plr.Name))
 	srv.askAnswer(plr)
 
 	for {
@@ -133,7 +134,7 @@ func (srv *Structure) startPlay(conn net.Conn) {
 
 func (srv *Structure) startNewQuest() {
 	srv.Question.Reset()
-	srv.Announce(fmt.Sprintf("Please enter answer for %v:\n", srv.Question))
+	srv.Announce(fmt.Sprintf(FormatOfAnswerRequest, srv.Question))
 	log.Println("New game started:", srv.Question)
 }
 
@@ -172,7 +173,7 @@ func (srv *Structure) askName(p *player.Structure) error {
 			if !open {
 				return errors.New("player left")
 			} else if srv.hasPlayer(name) {
-				p.Send(fmt.Sprintf("player '%v' already exists\n", name))
+				p.Send(fmt.Sprintf(FormatOfPlayerExists, name))
 				continue
 			} else {
 				p.Name = name
@@ -212,5 +213,5 @@ func (srv *Structure) acceptAnswer(ans string, plr *player.Structure) {
 }
 
 func (srv *Structure) askAnswer(plr *player.Structure) {
-	plr.Send(fmt.Sprintf("Please enter integer answer for %v:\n", srv.Question))
+	plr.Send(fmt.Sprintf(FormatOfAnswerRequest, srv.Question))
 }
