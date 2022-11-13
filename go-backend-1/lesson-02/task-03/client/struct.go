@@ -34,15 +34,8 @@ func (cli *Structure) GetAddress() string {
 //
 
 // Остановить работу клиента.
-func (cli *Structure) Stop() error {
-	cli.Connection.Close()
+func (cli *Structure) Stop() {
 	cli.Stopping <- struct{}{}
-
-	close(cli.Sending)
-	close(cli.Receiving)
-	close(cli.Stopping)
-
-	return nil
 }
 
 //
@@ -56,9 +49,9 @@ func (cli *Structure) Start() error {
 	cli.Connection, err = cli.Dialer.Dial("tcp", adr)
 
 	if err == nil {
-		go cli.StartProcessing()
-		go cli.StartReceiving()
 		go cli.StartSending()
+		go cli.StartReceiving()
+		go cli.StartProcessing()
 	}
 
 	return err
@@ -73,14 +66,21 @@ func (cli *Structure) Start() error {
 //   - Отправлять сообщеия;
 //   - Покинуть чат.
 func (cli *Structure) StartProcessing() {
+	defer close(cli.Stopping)
+
 	for {
 		select {
 		case <-cli.Stopping:
+			cli.Connection.Close()
 			return
-		case msg := <-cli.Receiving:
-			log.Println(msg)
-		case msg := <-cli.Sending:
-			fmt.Fprintln(cli.Connection, msg)
+		case msg, opn := <-cli.Receiving:
+			if opn {
+				log.Println(msg)
+			}
+		case msg, opn := <-cli.Sending:
+			if opn {
+				fmt.Fprintln(cli.Connection, msg)
+			}
 		}
 	}
 }
@@ -94,11 +94,12 @@ func (cli *Structure) StartReceiving() {
 	var chn = cli.Receiving
 	var inp = bufio.NewScanner(con)
 
+	defer close(cli.Clossing)
+	defer close(cli.Receiving)
+
 	for inp.Scan() {
 		chn <- inp.Text()
 	}
-
-	close(cli.Clossing)
 }
 
 //
@@ -107,6 +108,8 @@ func (cli *Structure) StartReceiving() {
 // Начать процесс отпраления сообщений в чат.
 func (cli *Structure) StartSending() {
 	var inp = bufio.NewScanner(os.Stdin)
+
+	defer close(cli.Sending)
 
 	for inp.Scan() {
 		cli.Sending <- inp.Text()

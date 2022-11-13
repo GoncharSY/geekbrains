@@ -37,22 +37,22 @@ func startClient() {
 	var cli = client.New(host, port)
 	var adr = cli.GetAddress()
 
+	log.Println("Client starting:", adr)
+	log.Println(strings.Repeat("=", 50))
+
 	if err := cli.Start(); err != nil {
 		log.Fatal(err)
-	} else {
-		log.Println("client started:", adr)
-		log.Println(strings.Repeat("=", 50))
 	}
 
 	select {
 	case <-ctx.Done():
 		cli.Stop()
 	case <-cli.Clossing:
-		log.Println("connection closed by server")
+		log.Println("Connection closed by server")
 	}
 
 	log.Println(strings.Repeat("=", 50))
-	log.Println("client stopped")
+	log.Println("Client stopped")
 }
 
 // Запустить новый чат-сервер.
