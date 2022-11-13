@@ -14,6 +14,7 @@ import (
 	"go-backend-1/lesson-02/task-03/server/quest"
 )
 
+// Структура для игрового сервера.
 type Structure struct {
 	Host string
 	Port string
@@ -35,10 +36,12 @@ type Structure struct {
 // ======================================================================================
 // ======================================================================================
 
+// Получить адрес, на котром запускается сервер.
 func (srv *Structure) GetAddress() string {
 	return fmt.Sprintf("%v:%v", srv.Host, srv.Port)
 }
 
+// Отправить сообщение всем игрокам на сервере.
 func (srv *Structure) Announce(msg string) {
 	for _, plr := range srv.Players {
 		go plr.Send(msg)
@@ -49,6 +52,7 @@ func (srv *Structure) Announce(msg string) {
 // STOP =================================================================================
 // ======================================================================================
 
+// Остановить работу сервера.
 func (srv *Structure) Stop() {
 	srv.Cancel()
 }
@@ -57,6 +61,7 @@ func (srv *Structure) Stop() {
 // START ================================================================================
 // ======================================================================================
 
+// Запустить сервер. При этом автоматически начнется новая игра.
 func (srv *Structure) Start() error {
 	var ctx = srv.Context
 	var adr = srv.GetAddress()
@@ -73,6 +78,7 @@ func (srv *Structure) Start() error {
 	return err
 }
 
+// Начать обработку.
 func (srv *Structure) startProcessing() {
 	defer log.Println("processing stopped")
 
@@ -86,6 +92,7 @@ func (srv *Structure) startProcessing() {
 	}
 }
 
+// Начать подключение новых игроков.
 func (srv *Structure) startAccepting() {
 	for {
 		con, err := srv.Listener.Accept()
@@ -99,6 +106,7 @@ func (srv *Structure) startAccepting() {
 	}
 }
 
+// Начать взаимодействие с игроком.
 func (srv *Structure) startPlay(conn net.Conn) {
 	var plr = player.New(conn)
 	var err error
@@ -132,6 +140,7 @@ func (srv *Structure) startPlay(conn net.Conn) {
 	}
 }
 
+// Начать новую игру.
 func (srv *Structure) startNewQuest() {
 	srv.Question.Reset()
 	srv.Announce(fmt.Sprintf(FormatOfAnswerRequest, srv.Question))
@@ -142,17 +151,20 @@ func (srv *Structure) startNewQuest() {
 // PLAYERS ==============================================================================
 // ======================================================================================
 
+// Проверить наличие игрока под указанным именем.
 func (srv *Structure) hasPlayer(name string) bool {
 	_, yes := srv.Players[name]
 	return yes
 }
 
+// Удалить игрока.
 func (srv *Structure) removePlayer(name string) {
 	if srv.hasPlayer(name) {
 		delete(srv.Players, name)
 	}
 }
 
+// Добавить нового игрока.
 func (srv *Structure) addPlayer(p *player.Structure) error {
 	if srv.hasPlayer(p.Name) {
 		return errors.New("already exists")
@@ -162,6 +174,7 @@ func (srv *Structure) addPlayer(p *player.Structure) error {
 	return nil
 }
 
+// Запросить у игрока его имя.
 func (srv *Structure) askName(p *player.Structure) error {
 	for {
 		p.Send("Enter your name please:\n")
@@ -187,6 +200,7 @@ func (srv *Structure) askName(p *player.Structure) error {
 // QUESTION AND ANSWER ==================================================================
 // ======================================================================================
 
+// Проверить корректность ответа на игровую задачу.
 func (srv *Structure) isCorrect(ans string) bool {
 	if val, err := strconv.Atoi(ans); err != nil {
 		return false
@@ -195,6 +209,7 @@ func (srv *Structure) isCorrect(ans string) bool {
 	}
 }
 
+// Принять ответ игрока для проверки его на корректность.
 func (srv *Structure) acceptAnswer(ans string, plr *player.Structure) {
 	srv.QuestMtx.Lock()
 	defer srv.QuestMtx.Unlock()
@@ -212,6 +227,7 @@ func (srv *Structure) acceptAnswer(ans string, plr *player.Structure) {
 	}
 }
 
+// Отправить игроку условия актуальной игровой задачи.
 func (srv *Structure) askAnswer(plr *player.Structure) {
 	plr.Send(fmt.Sprintf(FormatOfAnswerRequest, srv.Question))
 }

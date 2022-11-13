@@ -1,7 +1,9 @@
 package quest
 
+// Оператор для игровой задачи.
 type Operator uint32
 
+// Преобразовать оператор в строку.
 func (opr Operator) String() string {
 	switch opr {
 	case Div:
@@ -16,8 +18,8 @@ func (opr Operator) String() string {
 }
 
 const (
-	Inc Operator = iota + 1
-	Dec
-	Mul
-	Div
+	Inc Operator = iota + 1 // Оператор сложения.
+	Dec                     // Оператор вычитания.
+	Mul                     // Оператор умножения.
+	Div                     // Оператор деления.
 )

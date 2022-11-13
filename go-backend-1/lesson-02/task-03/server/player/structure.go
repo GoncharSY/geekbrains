@@ -6,6 +6,7 @@ import (
 	"net"
 )
 
+// Структура игрока на сервере.
 type Structure struct {
 	Name       string
 	Connection net.Conn
@@ -16,6 +17,7 @@ type Structure struct {
 // ============================================================================
 // ============================================================================
 
+// Отправить сообщение игроку на клиент.
 func (plr *Structure) Send(msg string) {
 	fmt.Fprint(plr.Connection, msg)
 }
@@ -24,6 +26,7 @@ func (plr *Structure) Send(msg string) {
 // ============================================================================
 // ============================================================================
 
+// Начать процес принятия ответов игрока на игровые задачи.
 func (plr *Structure) startAnswering() {
 	var msg = bufio.NewScanner(plr.Connection)
 

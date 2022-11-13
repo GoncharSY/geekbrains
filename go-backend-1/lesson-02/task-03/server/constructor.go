@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// Создать новый игровой сервер и вернуть указатель на него.
 func New(host, port string) *Structure {
 	if host == "" {
 		host = DefaultHost
